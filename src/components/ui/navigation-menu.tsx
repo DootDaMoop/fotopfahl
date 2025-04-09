@@ -18,17 +18,45 @@ function AuthButton() {
     return (
       <>
         {session.user?.name} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        <button
+          onClick={() => signOut()}
+          style={{
+            backgroundColor: "black", 
+            color: "white", 
+            width: "100%", 
+            padding: "10px 15px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Sign out
+        </button>
       </>
-    )
+    );
   }
   return (
     <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button
+        onClick={() => signIn()}
+        type="button"
+        style={{
+          backgroundColor: "black", // Black background
+          color: "white", // White text
+          width: "100%", // Full width
+          padding: "10px 15px",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "bold",
+        }}
+      >
+        Sign in here!
+      </button>
     </>
-  )
-};
+  );
+}
 
 function NavigationMenu({
   className,
