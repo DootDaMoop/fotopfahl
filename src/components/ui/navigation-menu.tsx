@@ -42,7 +42,7 @@ function AuthButton() {
         onClick={() => signIn()}
         type="button"
         style={{
-          backgroundColor: "black", // Black background
+          backgroundColor: "#064789", // Black background
           color: "white", // White text
           width: "100%", // Full width
           padding: "10px 15px",
