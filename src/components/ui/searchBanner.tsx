@@ -1,6 +1,7 @@
 import React from 'react';
 import Logo from './logo';
 import { FaHome, FaPlusCircle, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
+import Link from 'next/link';
 
 const SearchBanner = () => {
   return (
@@ -37,7 +38,7 @@ const SearchBanner = () => {
               {/* Nav Item Template */}
               {[
                 { icon: <FaHome size={40} />, label: "Home", link: "/homePage" },
-                { icon: <FaPlusCircle size={40} />, label: "Post", link: "/createPage" },
+                { icon: <FaPlusCircle size={40} />, label: "Post", link: "/createPost" },
                 { icon: <FaMapMarkerAlt size={40} />, label: "Map", link: "/mapPage" },
                 { icon: <FaGlobe size={40} />, label: "Explore", link: "/explorePage" },
               ].map(({ icon, label, link }) => (
@@ -126,12 +127,14 @@ const SearchBanner = () => {
             borderRadius: "50%", 
             overflow: "hidden", 
             border: "2px solid #064789",}}>
-          <img src="/path/to/profile-picture.jpg" alt="Profile" 
-            style={{ 
-              width: "100%", 
-              height: "100%", 
-              objectFit: "cover",
-            }}/>
+              <Link href='/profilePage'>
+                <img src="/path/to/profile-picture.jpg" alt="Profile" 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "cover",
+                  }}/>
+              </Link>
         </div>
       </div>
     </>

@@ -1,32 +1,19 @@
-//TODO 
-// Make PFP into a link to pofile page
-//Make individual post page 
-//Make create post page
-
 import React, { useState } from "react";
 import { AuthButton } from "@/components/ui/navigation-menu";
 import '@fontsource/sansita';
 import SearchBanner from "@/components/ui/searchBanner";
 import LikeButton from "@/components/ui/likeButton";
-import Link from "next/link";
+import { BiBorderRadius } from "react-icons/bi";
 
 // Static user data
-const users = [
+const currentUser =
   {
     id: 1,
     profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
     userName: "FCOhGoodHeavens",
     password: "abc",
     name: "Connor Ayscue"
-  },
-  {
-    id: 2,
-    profilePicture: "https://randomuser.me/api/portraits/women/2.jpg",
-    userName: "User1",
-    password: "123",
-    name: "Another User"
-  }
-];
+  };
 
 // Static post data
 const initialPosts = [
@@ -60,7 +47,7 @@ const initialPosts = [
   }
 ];
 
-const HomePage = () => {
+const ProfilePage = () => {
   const [posts, setPosts] = useState(initialPosts);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   
@@ -80,10 +67,53 @@ const HomePage = () => {
     <>
       <SearchBanner />
       <div style={{ marginLeft: "200px", paddingTop: "100px", padding: "20px" }}>
+        {/* Profile Information */}
+        {currentUser && (
+            <>
+  <div style={{ display: "flex", alignItems: "center", marginBottom: "40px", paddingTop: "100px" }}>
+    <img
+      src={currentUser.profilePicture}
+      alt={currentUser.name}
+      style={{
+        width: "80px",
+        height: "80px",
+        borderRadius: "50%",
+        objectFit: "cover",
+        marginRight: "20px"
+      }}
+    />
+    <div>
+      <h1 style={{ margin: 0 }}>{currentUser.name}</h1>
+      <p style={{ color: "#666", margin: 0 }}>@{currentUser.userName}</p>
+    </div>
+  </div>
+
+  <div style={{ padding: "20px" }}>
+      <form style={{ display: "flex", flexDirection: "column", width: "300px" }}>
+        <label htmlFor="name" style={{ marginTop: "10px" }}>Name:</label>
+        <input type="text" id="name" name="name" value={currentUser.name}/>
+
+        <label htmlFor="username" style={{ marginTop: "10px" }}>Username:</label>
+        <input type="text" id="username" name="username" value={currentUser.userName}/>
+
+        <label htmlFor="password" style={{ marginTop: "10px" }}>Password:</label>
+        <input type="password" id="password" name="password" value={currentUser.password}/>
+
+        <label htmlFor="profilePicture" style={{ marginTop: "10px" }}>Profile Picture:</label>
+        <input type="file" id="profilePicture" name="profilePicture"/>
+
+        <button type="submit" style={{ marginTop: "20px" }}>Submit</button>
+      </form>
+    </div>
+
+  </>)}
+
+
         {/* Feed Container */}
-        <div style={{ maxWidth: "800px", margin: "0 auto", paddingTop: "100px" }}>
-          {posts.map((post) => {
-            const user = users.find((user) => user.id === post.userId);
+        <div style={{ maxWidth: "800px", margin: "0 auto", paddingTop: "75px" }}>
+            <h1 style={{paddingBottom: '10px'}}>Your Posts:</h1>
+          {posts.filter(post => post.userId === 1).map((post) => {
+
             {/* THESE ARE THE INDIVIDUAL POSTS */}
             return (
               <div
@@ -101,8 +131,8 @@ const HomePage = () => {
                 {/* User Info */}
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
                   <img
-                    src={user?.profilePicture}
-                    alt={user?.name || "User"}
+                    src={currentUser?.profilePicture}
+                    alt={currentUser?.name || "User"}
                     style={{
                       width: "50px",
                       height: "50px",
@@ -112,7 +142,7 @@ const HomePage = () => {
                     }}
                   />
                   <div>
-                    <strong>{user?.name || user?.userName}</strong>
+                    <strong>{currentUser?.name || currentUser?.userName}</strong>
                     <div style={{ fontSize: "12px", color: "#666" }}>{post.mapData.locationName}</div>
                   </div>
                 </div>
@@ -140,25 +170,6 @@ const HomePage = () => {
                   handleLike={handleLike}
                   liked={likedPosts.includes(post.id)}/>
 
-                  {/*  Read More Button  */}
-<div style={{ display: "flex", justifyContent: "flex-end" }}>
-  <Link href={`/individualPost`}>
-    <button
-      style={{
-        padding: "10px 20px",
-        fontSize: "16px",
-        backgroundColor: "#064789",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        fontFamily: "'Sansita', sans-serif",
-      }}>
-      Read More
-    </button>
-  </Link>
-</div>
-
               </div>
             );
           })}
@@ -176,4 +187,4 @@ const HomePage = () => {
     </>
   );
 };
-export default HomePage;
+export default ProfilePage;
