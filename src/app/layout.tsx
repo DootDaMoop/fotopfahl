@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 //import "./globals.css";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/SessionProvider";
+import { InitializeDB } from "@/scripts/init-db";
+
+await InitializeDB();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

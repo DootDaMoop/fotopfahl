@@ -1,6 +1,6 @@
 import pg from 'pg'
 import { Kysely, PostgresDialect } from 'kysely'
-import { Database } from './types.js'
+import { Database } from '@/db/types.ts'
 import dotenv from 'dotenv'
 
 dotenv.config()

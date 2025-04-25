@@ -7,18 +7,19 @@ import {
   PostgresDialect,
   FileMigrationProvider,
 } from 'kysely'
-import { db } from './db.js'
+import { db } from '@/db/db.ts'
 
 export const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(import.meta.dirname, 'migrations'),
+      migrationFolder: path.join('/home/dootdamoop/projects/fotopfahl/src/db/migrations'),
     }),
   });
 
 export async function migrateToLatest() {
+  console.log(__dirname)
   const { error, results } = await migrator.migrateToLatest()
 
     let migrationError = false

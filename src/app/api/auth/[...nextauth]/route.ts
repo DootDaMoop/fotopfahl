@@ -6,6 +6,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { users } from '@/app/api/register/route'; // Import the temporary user database
 import type { JWT } from 'next-auth/jwt';
 import type { User, Session } from 'next-auth';
+import * as userRepo from '@/db/repositories/users';
+
 
 declare module 'next-auth' {
     interface Session {
@@ -52,9 +54,9 @@ export const authOptions = {
                     return null;
                 }
 
-                const user = users.find(
-                    (user) => user.username === credentials.username || user.email === credentials.email
-                );
+                const user = await userRepo.findUserByUsername(credentials.username ?? '') ||
+                    await userRepo.findUserByEmail(credentials.email ?? '');
+
                 if (!user) {
                     return null;
                 }
@@ -64,9 +66,9 @@ export const authOptions = {
                 }
 
                 return {
-                    id: user.id,
-                    name: user.username,
-                    email: user.email,
+                    id: String(user.id),
+                    name: user.userName,
+                    email: user.email ?? null,
                 }
             }
         }),

@@ -1,11 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
 
 export function RegisterPage() {
-    const router = useRouter();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
