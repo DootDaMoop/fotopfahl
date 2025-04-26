@@ -19,7 +19,6 @@ export const migrator = new Migrator({
   });
 
 export async function migrateToLatest() {
-  console.log(__dirname)
   const { error, results } = await migrator.migrateToLatest()
 
     let migrationError = false
