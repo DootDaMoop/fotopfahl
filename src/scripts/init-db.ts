@@ -5,7 +5,7 @@ export async function InitializeDB() {
     try {
         await migrateToLatest();
         console.log("Database initialized successfully.");
-        process.exit(0);
+        return;
     } catch (error) {
         console.error("Error initializing database:", error);
         process.exit(1);

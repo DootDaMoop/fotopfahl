@@ -3,7 +3,6 @@ import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 //import { compare } from 'bcrypt';
-import { users } from '@/app/api/register/route'; // Import the temporary user database
 import type { JWT } from 'next-auth/jwt';
 import type { User, Session } from 'next-auth';
 import * as userRepo from '@/db/repositories/users';
@@ -74,6 +73,23 @@ export const authOptions = {
         }),
     ],
     callbacks: {
+        async signIn({ user, account, profile }) {
+            if (account?.provider === 'google') {
+                const existingUser = await userRepo.findUserByUsername(user.name ?? '');
+                if (!existingUser) {
+                    const newUser = {
+                        userName: user.name,
+                        email: user.email,
+                        password: null,
+                        name: null,
+                        profilePicture: profile.picture,
+                        provider: account.provider
+                    };
+                    await userRepo.createUser(newUser);
+                }
+            }
+            return true;
+        },
         async jwt({ token, user }: { token: JWT; user: User }) {
             if (user) {
                 return {

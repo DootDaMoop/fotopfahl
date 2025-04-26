@@ -8,11 +8,11 @@ dotenv.config()
 const dialect = new PostgresDialect({
     pool: new pg.Pool({
     database: process.env.DATABASE_NAME,
-    host: process.env.DATABASE_HOST || 'localhost',
-    user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'postgres',
-    port: Number(process.env.DATABASE_PORT) || 5432,
-    max: Number(process.env.POOL_MAX) || 10,
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    port: Number(process.env.DATABASE_PORT),
+    max: Number(process.env.POOL_MAX),
     })
 })
 

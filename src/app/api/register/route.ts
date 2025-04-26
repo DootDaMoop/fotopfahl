@@ -29,9 +29,11 @@ export async function POST(req: Request) {
             provider: 'credentials'
         };
 
+        const createdUser = await userRepo.createUser(newUser);
+
         return NextResponse.json({
             message: 'User registered successfully',
-            user: newUser
+            user: createdUser
         }, { status: 201 });
     } catch (error) {
         console.error('Error registering user:', error);
