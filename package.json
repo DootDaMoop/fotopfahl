@@ -2,18 +2,22 @@
   "name": "fotopfhal",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "tsx src/scripts/init-db.ts"
   },
   "dependencies": {
     "@fontsource/sansita": "^5.2.5",
     "@radix-ui/react-navigation-menu": "^1.2.5",
     "@radix-ui/react-slot": "^1.1.2",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "kysely": "^0.27.6",
     "lucide-react": "^0.486.0",
     "next": "15.2.4",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
     "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
     "@types/pg": "^8.11.11",
@@ -37,6 +42,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }
