@@ -14,7 +14,7 @@ export const migrator = new Migrator({
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join('/home/dootdamoop/projects/fotopfahl/src/db/migrations'),
+      migrationFolder: path.join('/home/connor/assignments/fotopfahl/src/db/migrations'),
     }),
   });
 
