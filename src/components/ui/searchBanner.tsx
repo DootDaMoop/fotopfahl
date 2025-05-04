@@ -6,10 +6,9 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 const SearchBanner: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const sessionUserId = session?.user?.id;
-
-  if (status === "loading") return null; // or a loading indicator
+  console.log("Session User ID:", sessionUserId);
 
   return (
     <>
