@@ -6,16 +6,18 @@ import { findUserById } from "@/db/repositories/users";
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
+  const userId = params.id;
 
   if (!session) {
     return <div>Please sign in to view your profile.</div>;
   }
-  const user = await findUserById(Number(params.id));
+  const user = await findUserById(Number(userId));
   if(!user){return <h1>User not Found</h1>}
-  const isOwnProfile = session?.user?.id === params.id;
+
+  const isOwnProfile = (session?.user?.id === userId);
   
   console.log("Session User ID:", session.user.id);
-  console.log("Params ID:", params.id);
+  console.log("Params ID:", userId);
   console.log("Is Own Profile:", isOwnProfile);
 
   return (
