@@ -1,9 +1,14 @@
+"use client";
 import React from 'react';
 import Logo from './logo';
 import { FaHome, FaPlusCircle, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
-const SearchBanner = () => {
+const SearchBanner: React.FC = () => {
+  const { data: session } = useSession(); // Get session data
+  const sessionUserId = session?.user?.id || "";
+
   return (
     <>
       {/* Left Navigation Bar */}
@@ -121,21 +126,28 @@ const SearchBanner = () => {
 
         {/* Profile Picture on Right */}
         <div 
-          style={{ 
-            width: "50px", 
-            height: "50px", 
-            borderRadius: "50%", 
-            overflow: "hidden", 
-            border: "2px solid #064789",}}>
-              <Link href='/profilePage'>
-                <img src="/path/to/profile-picture.jpg" alt="Profile" 
-                  style={{ 
-                    width: "100%", 
-                    height: "100%", 
-                    objectFit: "cover",
-                  }}/>
-              </Link>
-        </div>
+  style={{ 
+    width: "50px", 
+    height: "50px", 
+    borderRadius: "50%", 
+    overflow: "hidden", 
+    border: "2px solid #064789",
+  }}
+>
+  <Link href={`/profilePage/${sessionUserId}`}>
+    <img
+      src="/path/to/profile-picture.jpg"
+      alt="Profile"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        cursor: "pointer",
+      }}
+    />
+  </Link>
+</div>
+
       </div>
     </>
   );

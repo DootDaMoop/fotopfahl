@@ -9,7 +9,7 @@ import { AuthButton } from "@/components/ui/navigation-menu";
 import { getServerSession } from "next-auth";
 import '@fontsource/sansita'; 
 import SignInBanner from "@/components/ui/sign-in-banner";
-import HomePage from "@/pages/homePage";
+import HomePage from "@/app/homePage/page";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RegistrationButton from "@/components/ui/registrationButton";
 import { authOptions } from "./api/auth/[...nextauth]/route";
