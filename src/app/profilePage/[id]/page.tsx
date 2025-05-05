@@ -3,27 +3,35 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import SearchBanner from "@/components/ui/searchBanner";
 import '@fontsource/sansita';
 import { findUserById } from "@/db/repositories/users";
+import Image from "next/image";
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
-  const userId = params.id;
+  const { id } = await params;
+  const userId = id;
 
-  if (!session) {
+  if (!userId || userId === 'undefined') {
     return <div>Please sign in to view your profile.</div>;
   }
+
   const user = await findUserById(Number(userId));
-  if(!user){return <h1>User not Found</h1>}
+  if(!user){
+    return (
+      <>
+        <SearchBanner />
+          <div style={{ paddingTop: "150px", textAlign: "center" }}>
+            <h1>User not Found</h1>
+            <p>The requested profile could not be found.</p>
+          </div>
+      </>
+    );
+  }
 
   const isOwnProfile = (session?.user?.id === userId);
-  
-  console.log("Session User ID:", session.user.id);
-  console.log("Params ID:", userId);
-  console.log("Is Own Profile:", isOwnProfile);
 
   return (
     <>
-<SearchBanner />
-
+      <SearchBanner />
       <div
         style={{
           display: "flex",
@@ -40,12 +48,12 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         }}>
 
         <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-          <img
+          <Image
             src={user.profilePicture || ""}
             alt={user.userName || "Profile Picture"}
+            width={80}
+            height={80}
             style={{
-              width: "80px",
-              height: "80px",
               borderRadius: "50%",
               objectFit: "cover",
               outline: "2px solid black",
@@ -82,12 +90,12 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           </form>
         ) : (
           <div>
-              <img
+              <Image
                 src={user?.profilePicture || ""}
                 alt="Profile Picture"
+                width={80}
+                height={80}
                 style={{
-                  width: "80px",
-                  height: "80px",
                   borderRadius: "50%",
                   objectFit: "cover",
                 }} />

@@ -75,17 +75,24 @@ export const authOptions = {
     callbacks: {
         async signIn({ user, account, profile }) {
             if (account?.provider === 'google') {
-                const existingUser = await userRepo.findUserByUsername(user.name ?? '');
-                if (!existingUser) {
+                const existingUser = await userRepo.findUserByEmail(user.email ?? '');
+                if (existingUser) {
+                    user.id = String(existingUser.id);
+                    return true;
+                } else {
                     const newUser = {
-                        userName: user.name,
+                        userName: user.name || profile.name,
                         email: user.email,
                         password: null,
-                        name: null,
+                        name: user.name,
                         profilePicture: profile.picture,
                         provider: account.provider
                     };
-                    await userRepo.createUser(newUser);
+                    const createdUser = await userRepo.createUser(newUser);
+                    if (createdUser) {
+                        user.id = String(createdUser.id);
+                        return true;
+                    }
                 }
             }
             return true;

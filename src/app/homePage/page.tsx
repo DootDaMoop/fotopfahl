@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useEffect, useState } from "react";
 import { AuthButton } from "@/components/ui/navigation-menu";
 import '@fontsource/sansita';
 import SearchBanner from "@/components/ui/searchBanner";
@@ -59,9 +59,16 @@ const initialPosts = [
 
 
   const HomePage = () => {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [posts, setPosts] = useState(initialPosts);
     const [likedPosts, setLikedPosts] = useState<number[]>([]);
+    const [isSessionLoaded, setIsSessionLoaded] = useState(false);
+
+    useEffect(() => {
+      if (status !== 'loading') {
+        setIsSessionLoaded(true);
+      }
+    }, [status]);
 
     const handleLike = (postId: number) => {
       if (likedPosts.includes(postId)) return;
