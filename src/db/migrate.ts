@@ -14,7 +14,7 @@ export const migrator = new Migrator({
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join('/home/connor/assignments/fotopfahl/src/db/migrations'),
+      migrationFolder: path.join(process.cwd(), 'src/db/migrations'),
     }),
   });
 
