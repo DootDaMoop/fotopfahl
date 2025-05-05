@@ -2,7 +2,6 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-//import { compare } from 'bcrypt';
 import type { JWT } from 'next-auth/jwt';
 import type { User, Session } from 'next-auth';
 import * as userRepo from '@/db/repositories/users';
@@ -109,6 +108,13 @@ export const authOptions = {
                 email: token.email as string,
             };
             return session;
+        },
+        async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+            // Redirect to /homePage only after a successful sign-in
+            if (url.startsWith(baseUrl)) {
+                return '/homePage';
+            }
+            return url;
         }
     },
     session: {

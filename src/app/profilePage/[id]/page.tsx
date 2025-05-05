@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import SearchBanner from "@/components/ui/searchBanner";
 import '@fontsource/sansita';
 import { findUserById } from "@/db/repositories/users";
+import { AuthButton } from "@/components/ui/navigation-menu";
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -38,6 +39,15 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           borderRadius: "10px",
           padding: "20px",
         }}>
+{isOwnProfile ? (
+  <div style={{ position: "relative", width: "100%" }}>
+    <div style={{ position: "absolute", top: 0, right: 0 }}>
+      <AuthButton />
+    </div>
+  </div>
+) : (
+  <></>
+)}
 
         <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <img
