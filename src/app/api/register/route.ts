@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import * as userRepo from '@/db/repositories/users.ts';
-//import { hash } from 'bcrypt';
 
 export async function POST(req: Request) {
     try {
@@ -18,12 +17,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'User already exists' }, { status: 409 });
         }
 
-        //const hashedPassword = await hash(password, 10);
 
         const newUser = {
             userName: username,
             email: email,
-            password: password, // TODO: hash Password with bcrypt
+            password: password, 
             name: null,
             profilePicture: null,
             provider: 'credentials'
