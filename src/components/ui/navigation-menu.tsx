@@ -4,57 +4,34 @@ import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
 import { ChevronDownIcon } from "lucide-react"
-
-// Auth
-//import { Link } from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
-
 import { cn } from "@/lib/utils"
 
 function AuthButton() {
   const { data: session } = useSession();
 
-  if (session) {
-    return (
-      <>
-        {session.user?.name} <br />
-        <button
-          onClick={() => signOut()}
-          style={{
-            backgroundColor: "black", 
-            color: "white", 
-            width: "100%", 
-            padding: "10px 15px",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          Sign out
-        </button>
-      </>
-    );
-  }
-  return (
+  const buttonStyle = {
+    backgroundColor: session ? "black" : "#064789",
+    color: "white",
+    width: "100%",  
+    padding: "10px 20px",
+    fontSize: "16px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  };
+
+  return session ? (
     <>
-      <button
-        onClick={() => signIn()}
-        type="button"
-        style={{
-          backgroundColor: "#064789", // Black background
-          color: "white", // White text
-          width: "100%", // Full width
-          padding: "10px 15px",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontWeight: "bold",
-        }}
-      >
-        Sign in here!
+      <button onClick={() => signOut({ callbackUrl: "/" })} style={buttonStyle}>
+        Sign out
       </button>
     </>
+  ) : (
+    <button onClick={() => signIn()} type="button" style={buttonStyle}>
+      Sign in here!
+    </button>
   );
 }
 
