@@ -1,14 +1,19 @@
-"use client";
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import Logo from './logo';
 import { FaHome, FaPlusCircle, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 const SearchBanner: React.FC = () => {
-  const { data: session } = useSession();
-  const sessionUserId = session?.user?.id;
-  console.log("Session User ID:", sessionUserId);
+  const { data: session, status } = useSession();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.id) {
+      setUserId(session.user.id);
+    }
+  }, [session, status]);
 
   return (
     <>
@@ -135,7 +140,7 @@ const SearchBanner: React.FC = () => {
     border: "2px solid #064789",
   }}
 >
-  <Link href={`/profilePage/${sessionUserId}`}>
+  <Link href={`/profilePage/${userId}`}>
     <img
       src="/path/to/profile-picture.jpg"
       alt="Profile"

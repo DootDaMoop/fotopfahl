@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/SessionProvider";
 import { InitializeDB } from "@/scripts/init-db";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 await InitializeDB();
 
@@ -27,7 +28,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
