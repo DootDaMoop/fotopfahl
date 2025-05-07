@@ -68,8 +68,7 @@ const SearchBanner: React.FC = () => {
               {[
                 { icon: <FaHome size={40} />, label: "Home", link: "/homePage" },
                 { icon: <FaPlusCircle size={40} />, label: "Post", link: "/createPost" },
-                { icon: <FaMapMarkerAlt size={40} />, label: "Map", link: "/mapPage" },
-                { icon: <FaGlobe size={40} />, label: "Explore", link: "/explorePage" },
+                { icon: <FaPlusCircle size={40} />, label: "Album", link: "/createAlbum" },
               ].map(({ icon, label, link }) => (
                 <li key={label} style={{ marginBottom: "30px", textAlign: "center" }}>
                   <a
@@ -110,43 +109,6 @@ const SearchBanner: React.FC = () => {
           fontFamily: "'Sansita', sans-serif",
         }}>
         <div style={{ width: "50px" }}></div>
-
-        {/* Search Bar */}
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            zIndex: 3,
-          }}>
-
-          <input
-            type="text" placeholder="Search..." style={{
-              padding: "10px",
-              fontSize: "16px",
-              border: "2px solid #064789",
-              borderRadius: "5px",
-              width: "300px",
-              fontFamily: "'Sansita', sans-serif",
-            }}/>
-
-          <button 
-            style={{ 
-              padding: "10px 20px", 
-              fontSize: "16px", 
-              backgroundColor: "#064789", 
-              color: "white", 
-              border: "none", 
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontFamily: "'Sansita', sans-serif",
-            }}>
-            Search
-          </button>
-        </div>
 
         {/* Profile Picture on Right */}
         <div 

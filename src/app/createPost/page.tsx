@@ -17,12 +17,7 @@ const CreatePost = () => {
     location: '',
     dataPermission: false,
   });
-  const [albumFormData, setAlbumFormData] = useState({
-    id: '',
-    albumName: '',
-    description: '',
-    
-  })
+
 
   // Pre-fill form data if query parameters are present
   useEffect(() => {
@@ -298,124 +293,6 @@ const CreatePost = () => {
             }}
           >
             {isSubmitting ? (formData.id ? 'Updating Post...' : 'Creating Post...') : (formData.id ? 'Update Post' : 'Create Post')}
-          </button>
-        </form>
-      </div>
-{/* THIS IS FOR ALBUMS */}
-      <div style={{ padding: '20px', paddingLeft: '200px', paddingTop: '125px' }}>
-      <h1>Albums:</h1>
-      <p>This is for if you want to post a high volume of images.</p>
-        <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>
-          {formData.id ? 'Edit Album' : 'Create a New Album'}
-        </h1>
-        {error && (
-          <div style={{ color: 'red', marginBottom: '20px' }}>
-            {error}
-          </div>
-        )}
-
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px' }}
-        >
-          <div style={{ marginBottom: '20px' }}>
-            <label>Upload Photos</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              multiple
-              style={{ marginTop: "5px" }}
-            />
-            <div>Click to upload</div>
-            <div>Upload one or more photos for your post (OPTIONAL)</div>
-            
-            {imageUrls.length > 0 && (
-              <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                {imageUrls.map((url, index) => (
-                  <div key={index} style={{ position: "relative", width: "100px", height: "100px" }}>
-                    <Image 
-                      src={url} 
-                      alt={`Preview ${index + 1}`} 
-                      width={100}
-                      height={100}
-                      style={{ 
-                        borderRadius: "5px",
-                        objectFit: "cover"
-                      }} 
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      style={{
-                        position: "absolute",
-                        top: "5px",
-                        right: "5px",
-                        background: "rgba(255, 0, 0, 0.7)",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: "20px",
-                        height: "20px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer"
-                      }}
-                    >
-                      x
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <label htmlFor="title" style={{ marginTop: '10px' }}>Album Name:</label>
-          <input
-            type="text"
-            id="albumName"
-            name="albumName"
-            value={formData.albumName}
-            onChange={handleChange}
-            style={{
-              padding: '8px',
-              marginTop: '5px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-            }}
-          />
-
-          <label htmlFor="description" style={{ marginTop: '15px' }}>Description:</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            style={{
-              padding: '8px',
-              marginTop: '5px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-              minHeight: '100px',
-            }}
-          />
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              marginTop: '20px',
-              padding: '10px 15px',
-              backgroundColor: isSubmitting ? '#cccccc' : '#064789',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              fontFamily: "'Sansita', sans-serif",
-            }}
-          >
-            {isSubmitting ? (formData.id ? 'Updating Album...' : 'Creating Album...') : (formData.id ? 'Update Album' : 'Create Album')}
           </button>
         </form>
       </div>
