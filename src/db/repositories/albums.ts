@@ -17,12 +17,12 @@ export async function updateAlbum(albumId: number, updatedData: any) {
         const updatedPost = await db
             .updateTable('album')
             .set({
-                title: updatedData.title,
+                albumName: updatedData.albumName,
                 description: updatedData.description,
                 images: updatedData.image,
             })
             .where('id', '=', albumId)
-            .returning(['id', 'title', 'description', 'images'])
+            .returning(['id', 'albumName', 'description', 'images'])
             .executeTakeFirst();
 
         return updatedPost;

@@ -4,6 +4,7 @@ export type Database = {
     user: UserTable;
     post: PostTable;
     comment: CommentTable;
+    album: AlbumTable;
 };
 
 
