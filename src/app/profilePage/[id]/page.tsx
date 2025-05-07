@@ -6,7 +6,6 @@ import { findUserById } from "@/db/repositories/users";
 import Image from "next/image";
 import ProfileForm from "@/components/ui/profileForm";
 import { AuthButton } from "@/components/ui/navigation-menu";
-import { Delete } from "lucide-react";
 import DeleteUserBtn from "@/components/ui/deleteUserBtn";
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
@@ -83,9 +82,8 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           outline: "2px solid black",
           borderRadius: "10px",
           padding: "20px",
-          position: "relative", // Added relative positioning
-        }}
-      >
+          position: "relative", 
+        }}>
         {/* User Info */}
         <div
           style={{
@@ -94,37 +92,31 @@ export default async function ProfilePage({ params }: { params: { id: string } }
             alignItems: "flex-start",
             marginLeft: "20px",
             gap: "5px",
-          }}
-        >
+          }}>
           <h1 style={{ margin: 0 }}>{user.name}</h1>
           <h3 style={{ margin: 0 }}>{user.userName}</h3>
         </div>
-
-        {/* Auth Button */}
 {/* Auth Button and Delete Button */}
 {isOwnProfile && (
   <div
     style={{
-      position: "absolute", // Position the container absolutely
-      top: "10px", // Adjust the top position
-      right: "10px", // Adjust the right position
-      display: "flex", // Use flexbox for alignment
-      flexDirection: "column", // Stack buttons vertically
-      alignItems: "center", // Center align the buttons
-      gap: "15px", // Add space between the buttons
-    }}
-  >
+      position: "absolute", 
+      top: "10px", 
+      right: "10px", 
+      display: "flex", 
+      flexDirection: "column", 
+      alignItems: "center",
+      gap: "15px", 
+    }}>
     <AuthButton />
     <DeleteUserBtn userId={userId} />
   </div>
 )}
-
         {isOwnProfile ? (
           <ProfileForm
             userId={userId}
             defaultName={session.user.name ?? ""}
-            defaultUsername={session.user.email ?? ""}
-          />
+            defaultUsername={session.user.email ?? ""}/>
         ) : (
           <div>
             {/* PFP NOT WORKING> PUT IT HERE THO */}
@@ -142,8 +134,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           paddingTop: "20px",
           outline: "2px solid black",
           borderRadius: "10px",
-        }}
-      >
+        }}>
         {isOwnProfile ? (
           <h1>Your Posts:</h1>
         ) : (
