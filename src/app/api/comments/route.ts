@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         const commentData = {
             userId: Number(session.user.id),
             postId: Number(body.postId),
-            content: body.text, // Renamed 'text' to 'content' to match the expected type
+            content: body.content, // Renamed 'text' to 'content' to match the expected type
         };
 
         const newComment = await commentRepo.createComment(commentData); // Save the comment in the database
