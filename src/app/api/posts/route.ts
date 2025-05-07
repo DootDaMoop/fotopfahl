@@ -12,15 +12,15 @@ export async function POST(req: Request) {
         }
         
         const body = await req.json();
-        if (!body.title || !body.image) {
-            return NextResponse.json({ error: "Title and image are required" }, { status: 400 });
+        if (!body.title) {
+            return NextResponse.json({ error: "Title is required" }, { status: 400 });
         }
 
         const postData = {
             userId: Number(session.user.id) ,
             title: body.title,
             description: body.description || null,
-            image: body.image,
+            images: body.images || null,
             mapData: {
                 lat: body.mapData?.lat || 0,
                 lng: body.mapData?.lng || 0,

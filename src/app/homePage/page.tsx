@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { AuthButton } from "@/components/ui/navigation-menu";
+// import { AuthButton } from "@/components/ui/navigation-menu";
 import '@fontsource/sansita';
 import SearchBanner from "@/components/ui/searchBanner";
 import LikeButton from "@/components/ui/likeButton";
@@ -65,7 +65,7 @@ const initialPosts = [
     const [isSessionLoaded, setIsSessionLoaded] = useState(false);
 
     useEffect(() => {
-      if (status !== 'loading') {
+      if (status !== 'loading' && isSessionLoaded === false) {
         setIsSessionLoaded(true);
       }
     }, [status]);
