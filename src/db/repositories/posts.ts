@@ -57,7 +57,7 @@ export async function updatePost(postId: number, updatedData: any) {
             .set({
                 title: updatedData.title,
                 description: updatedData.description,
-                images: updatedData.image,
+                images: updatedData.images ? JSON.stringify(updatedData.images) : null,
                 mapData: {
                     lat: updatedData.mapData?.lat || 0,
                     lng: updatedData.mapData?.lng || 0,

@@ -100,7 +100,7 @@ const SearchBanner: React.FC = () => {
           position: "fixed",
           top: 0,
           left: "100px",
-          zIndex: 2,
+          zIndex: 1000,
           height: "100px",
           display: "flex",
           alignItems: "center",
