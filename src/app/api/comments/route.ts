@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        if (!body.text || !body.postId) {
+        if (!body.content || !body.postId) {
             return NextResponse.json({ error: "Text and postId are required" }, { status: 400 });
         }
 

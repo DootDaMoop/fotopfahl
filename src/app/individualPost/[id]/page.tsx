@@ -86,6 +86,7 @@ const IndividualPostPage: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: newComment, postId: id }),
       });
+      console.log(response)
 
       if (response.ok) {
         const comment = await response.json();
@@ -98,6 +99,7 @@ const IndividualPostPage: React.FC = () => {
         }
         setNewComment("");
       } else {
+        console.log()
         console.error("Failed to submit comment:", response.statusText);
       }
     } catch (error) {
@@ -431,7 +433,6 @@ const IndividualPostPage: React.FC = () => {
         {/* Post Title & Description */}
         <h1 style={{ marginBottom: "10px" }}>{post.title}</h1>
         <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{post.description}</p>
-        {isOwnPost && <DeletePostBtn postId={post.id} />}
 
         {/* OpenStreetMap Embed */}
         {locationCoordinates ? (
