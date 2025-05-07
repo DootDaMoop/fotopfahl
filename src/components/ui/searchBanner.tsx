@@ -4,14 +4,32 @@ import Logo from './logo';
 import { FaHome, FaPlusCircle, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SearchBanner: React.FC = () => {
   const { data: session, status } = useSession();
   const [userId, setUserId] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.id) {
       setUserId(session.user.id);
+      if (session.user.image) {
+        setProfilePicture(session.user.image);
+      } else {
+        const fetchUserProfile = async () => {
+          try {
+            const response = await fetch(`/api/user/${session.user.id}`);
+            const data = await response.json();
+            if (data && data.profilePicture) {
+              setProfilePicture(data.profilePicture);
+            }
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
+          }
+        }
+        fetchUserProfile();
+      }
     }
   }, [session, status]);
 
@@ -141,8 +159,10 @@ const SearchBanner: React.FC = () => {
   }}
 >
   <Link href={`/profilePage/${userId}`}>
-    <img
-      src="/path/to/profile-picture.jpg"
+    <Image
+      src={profilePicture || "/defaultProfile.png"}
+      width={50}
+      height={50}
       alt="Profile"
       style={{
         width: "100%",
