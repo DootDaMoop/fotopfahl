@@ -28,13 +28,13 @@ const DeletePostBtn: React.FC<DeletePostBtnProps> = ({ postId }) => {
         });
 
         if (response.ok) {
-          alert('User deleted successfully!');
+          alert('Post deleted successfully!');
           router.push('/homePage');
         } else {
-          alert('Failed to delete user.');
+          alert('Failed to delete Post.');
         }
       }}>
-      Delete User
+      Delete Post
     </button>
   );
 };

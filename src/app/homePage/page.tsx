@@ -4,15 +4,18 @@ import '@fontsource/sansita';
 import SearchBanner from '@/components/ui/searchBanner';
 import LikeButton from '@/components/ui/likeButton';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
 interface Post {
   id: number;
   userId: number;
-  locationName?: string;
-  image: string;
   title: string;
   description?: string;
+  images: string[] | null;
+  mapData: {
+    location: string;
+  };
   likes: number;
 }
 
@@ -33,11 +36,18 @@ const HomePage = () => {
       try {
         const response = await fetch('/api/posts');
         if (response.ok) {
-          const data: Post[] = await response.json();
-          setPosts(data);
+          const data = await response.json();
+          
+          const processedPosts = data.map((post: Post) => ({
+            ...post,
+            images: post.images ? (typeof post.images === 'string' ? JSON.parse(post.images) : post.images) : null,
+            mapData: post.mapData ? (typeof post.mapData === 'string' ? JSON.parse(post.mapData) : post.mapData) : { location: 'Unknown' },
+          }));
+
+          setPosts(processedPosts);
 
           // Fetch users for each post
-          const uniqueUserIds = Array.from(new Set(data.map(post => post.userId)));
+          const uniqueUserIds = Array.from(new Set(data.map((post: Post) => post.userId)));
           const usersMap: Record<number, User> = {};
 
           await Promise.all(
@@ -81,6 +91,10 @@ const HomePage = () => {
         <div style={{ maxWidth: '800px', margin: '0 auto', paddingTop: '100px' }}>
           {posts.map(post => {
             const user = users[post.userId];
+            const imageUrl = post.images && post.images.length > 0 
+              ? post.images[0] 
+              : '/placeholder-image.jpg';
+              
             return (
               <div
                 key={post.id}
@@ -96,17 +110,18 @@ const HomePage = () => {
               >
                 {/* User Info */}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                  <img
-                    src={user?.profilePicture || '/default-profile.png'}
-                    alt={user?.name || 'User'}
-                    style={{
-                      width: '50px',
-                      height: '50px',
-                      borderRadius: '50%',
-                      marginRight: '15px',
-                      objectFit: 'cover',
-                    }}
-                  />
+                  <div style={{ width: '50px', height: '50px', position: 'relative', marginRight: '15px' }}>
+                    <Image
+                      src={user?.profilePicture || '/default-profile.png'}
+                      alt={user?.name || 'User'}
+                      fill
+                      sizes="50px"
+                      style={{
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Link
                       href={`/profilePage/${post.userId}`}
@@ -128,22 +143,27 @@ const HomePage = () => {
                         {user?.name || 'Unknown User'}
                       </strong>
                     </Link>
-                    <div style={{ fontSize: '12px', color: '#666' }}>{post.locationName}</div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>
+                      {post.mapData?.location || 'Unknown location'}
+                    </div>
                   </div>
                 </div>
 
                 {/* Post Image */}
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  style={{
-                    width: '100%',
-                    maxHeight: '400px',
-                    objectFit: 'cover',
-                    borderRadius: '10px',
-                    marginBottom: '10px',
-                  }}
-                />
+                { post.images && post.images.length > 0 && (
+                <div style={{ position: 'relative', width: '100%', height: '400px', marginBottom: '10px' }}>
+                  <Image
+                    src={imageUrl}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 800px) 100vw, 800px"
+                    style={{
+                      objectFit: "contain",
+                      backgroundColor: "#f0f0f0"
+                    }}
+                  />
+                </div>
+                )}
 
                 {/* Post Content */}
                 <h2 style={{ margin: '10px 0 5px' }}>{post.title}</h2>
