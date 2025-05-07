@@ -38,5 +38,40 @@ export async function createUser(user: Omit<UserTable, 'id'>) {
 }
 
 // TODO: Update User Function
+export async function updateUser(userId: number, updatedData: any) {
+    try {
+        const updatedUser = await db
+            .updateTable('user') 
+            .set({
+                name: updatedData.name,
+                userName: updatedData.username,
+                password: updatedData.password,
+                profilePicture: updatedData.profilePicture,
+            })
+            .where('id', '=', userId) 
+            .returning(['id', 'name', 'userName', 'email', 'profilePicture']) 
+            .executeTakeFirst();
+
+        return updatedUser;
+    } catch (error) {
+        console.error('Failed to update user:', error);
+        throw new Error('User update failed');
+    }
+}
+
 
 // TODO: Delete User Function
+export async function deleteUser(id: number) {
+    try {
+        const deletedUser = await db
+            .deleteFrom('user')
+            .where('id', '=', id)
+            .returning(['id', 'profilePicture', 'userName', 'email', 'name'])
+            .executeTakeFirst();
+
+        return deletedUser;
+    } catch (error) {
+        console.error('Failed to delete user:', error);
+        throw new Error('User deletion failed');
+    }
+}
