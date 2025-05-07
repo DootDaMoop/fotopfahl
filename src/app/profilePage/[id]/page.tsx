@@ -127,20 +127,6 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           </div>
         )}
       </div>
-      <div
-        style={{
-          marginLeft: "150px",
-          marginRight: "25px",
-          paddingTop: "20px",
-          outline: "2px solid black",
-          borderRadius: "10px",
-        }}>
-        {isOwnProfile ? (
-          <h1>Your Posts:</h1>
-        ) : (
-          <h1>{user?.userName}'s Posts:</h1>
-        )}
-      </div>
     </>
   );
 }

@@ -50,9 +50,9 @@ export default function ProfileForm({ userId, defaultName, defaultUsername }: {
 
       <label htmlFor="password" style={{ marginTop: "15px" }}>Password:</label>
       <input type="password" id="password" name="password" />
-
+{/*
       <label htmlFor="profilePicture" style={{ marginTop: "15px" }}>Profile Picture:</label>
-      <input type="file" id="profilePicture" name="profilePicture" />
+      <input type="file" id="profilePicture" name="profilePicture" /> */}
 
       <button type="submit" style={{
         marginTop: "20px",

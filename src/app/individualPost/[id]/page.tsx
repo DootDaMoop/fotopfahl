@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import DeletePostBtn from "@/components/ui/deletePostBtn";
 import DeleteCommentBtn from "@/components/ui/deleteCommentBtn";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const IndividualPostPage: React.FC = () => {
   const { id } = useParams();
@@ -503,12 +504,9 @@ const IndividualPostPage: React.FC = () => {
                   ) : (
                     <div>
                       <div style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
-                        <img
-                          src={comment.user?.profilePicture || "/default-profile.png"}
-                          alt={comment.user?.name || "User"}
-                          style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px", objectFit: "cover" }}
-                        />
-                        <strong>{comment.user?.name || "Unknown User"}</strong>
+                        <Link href={`/profilePage/${comment.userId}`} style={{ color: "black", textDecoration: "none", outline: "none" }}>
+                          <strong>{comment.user?.name || "Unknown User"}</strong>
+                        </Link>
                       </div>
                       <p style={{ margin: 0 }}>{comment.content}</p>
                     </div>

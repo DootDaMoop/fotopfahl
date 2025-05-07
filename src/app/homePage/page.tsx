@@ -22,6 +22,7 @@ interface Post {
 interface User {
   profilePicture: string | null;
   name: string | null;
+  userName: string | null;
 }
 
 const HomePage = () => {
@@ -29,6 +30,7 @@ const HomePage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [users, setUsers] = useState<Record<number, User>>({});
+  console.log(users)
 
   // Fetch posts
   useEffect(() => {
@@ -110,18 +112,6 @@ const HomePage = () => {
               >
                 {/* User Info */}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                  <div style={{ width: '50px', height: '50px', position: 'relative', marginRight: '15px' }}>
-                    <Image
-                      src={user?.profilePicture || '/default-profile.png'}
-                      alt={user?.name || 'User'}
-                      fill
-                      sizes="50px"
-                      style={{
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Link
                       href={`/profilePage/${post.userId}`}
