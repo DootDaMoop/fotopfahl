@@ -1,45 +1,51 @@
-import React from "react";
+'use client';
+
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import SearchBanner from "@/components/ui/searchBanner";
 import Link from "next/link";
 import Image from "next/image";
 import exifr from "exifr";
-import { useEffect, useState } from "react";
-
-// Static user & post data (temporary — ideally from props or backend)
-const users = [
-  {
-    id: 1,
-    profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
-    userName: "FCOhGoodHeavens",
-    password: "abc",
-    name: "Connor Ayscue",
-  },
-];
-
-const initialPosts = [
-  {
-    id: 1,
-    userId: 1,
-    title: "Sunset in the Rockies",
-    description: "Caught this view during a hike in Colorado.",
-    image: "/IMG_7046.JPG",
-    mapData: {
-      lat: 39.7392,
-      lng: -104.9903,
-      locationName: "Rocky Mountains",
-    },
-    dataPermission: true,
-    likes: 45,
-  },
-];
 
 const IndividualPostPage: React.FC = () => {
-  const post = initialPosts[0];
-  const user = users.find((u) => u.id === post.userId);
+  const { id } = useParams(); // Extract the post ID from the URL
+  const [post, setPost] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [exifData, setExifData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch the post data based on the ID
   useEffect(() => {
+    if (!id) return;
+
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/posts/${id}`);
+        const text = await response.text();
+        console.log("Raw response text:", text);
+        const data = JSON.parse(text);
+        console.log("Parsed data:", data);
+                
+        if (response.ok) {
+          const data = await response.json();
+          setPost(data.post); 
+        } else {
+          console.log(id)
+          console.log(response)
+          console.error("Failed to fetch post");
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  // Fetch EXIF data for the post image
+  useEffect(() => {
+    if (!post?.image) return;
+
     const fetchExifData = async () => {
       try {
         const data = await exifr.parse(post.image);
@@ -50,8 +56,9 @@ const IndividualPostPage: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchExifData();
-  }, [post.image, post.dataPermission]);
+  }, [post?.image]);
 
   const handleCameraData = () => {
     if (!exifData) return null;
@@ -81,6 +88,10 @@ const IndividualPostPage: React.FC = () => {
 
   const cameraData = handleCameraData();
 
+  if (!post) {
+    return <p>Loading post...</p>;
+  }
+
   return (
     <>
       <SearchBanner />
@@ -91,37 +102,14 @@ const IndividualPostPage: React.FC = () => {
           maxWidth: "800px",
           margin: "0 auto",
           paddingTop: "125px",
-          position: "relative", // enables absolute positioning inside
+          position: "relative",
         }}
       >
-  <div style={{ position: "relative" }}>
-    {/* ✏️ Edit Button */}
-    <Link href={`/createPost`}
-  style={{
-    position: "absolute",
-    top: "0px",
-    right: "0px", // 👈 move it to the right
-    padding: "8px 14px",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-    zIndex: 1,
-  }}>
-  Edit
-</Link>
-
-    {/* The rest of your post content... */}
-    {/* User Info, Image, Description, Likes, etc. */}
-  </div>
-
         {/* User Info */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <img
-            src={user?.profilePicture}
-            alt={user?.name}
+            src={user?.profilePicture || "/default-profile.png"}
+            alt={user?.name || "User"}
             style={{
               width: "60px",
               height: "60px",
@@ -132,7 +120,7 @@ const IndividualPostPage: React.FC = () => {
           />
           <div>
             <strong style={{ fontSize: "18px" }}>{user?.name || user?.userName}</strong>
-            <div style={{ fontSize: "13px", color: "#777" }}>{post.mapData.locationName}</div>
+            <div style={{ fontSize: "13px", color: "#777" }}>{post.mapData?.locationName}</div>
           </div>
         </div>
 
