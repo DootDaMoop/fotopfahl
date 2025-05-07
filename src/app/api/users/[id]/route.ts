@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { updateUser } from "@/db/repositories/users";
-import { deleteUser } from "@/db/repositories/users";
-
+import { deleteUser, findUserById } from "@/db/repositories/users";
+//UPDATE USER
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const userId = Number(params.id);
   const body = await req.json();
@@ -18,7 +18,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
   return NextResponse.json({ message: "User updated successfully", user: updatedUser });
 }
-
+//DELETE USER
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     const userId = Number(params.id);
     
@@ -33,3 +33,11 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     
     return NextResponse.json({ message: "User deleted successfully", user: deletedUser });
 }
+
+// GET USER BY ID
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+    const { id } = await params;  // Await the params before accessing the id
+    const user = await findUserById(Number(id));
+    return NextResponse.json(user);
+  }
+  

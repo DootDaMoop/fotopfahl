@@ -1,46 +1,48 @@
 'use client';
-import React from "react";
+
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import SearchBanner from "@/components/ui/searchBanner";
-import Link from "next/link";
 import Image from "next/image";
 import exifr from "exifr";
-import { useEffect, useState } from "react";
-
-// Static user & post data (temporary — ideally from props or backend)
-const users = [
-  {
-    id: 1,
-    profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
-    userName: "FCOhGoodHeavens",
-    password: "abc",
-    name: "Connor Ayscue",
-  },
-];
-
-const initialPosts = [
-  {
-    id: 1,
-    userId: 1,
-    title: "Sunset in the Rockies",
-    description: "Caught this view during a hike in Colorado.",
-    image: "/IMG_7046.JPG",
-    mapData: {
-      lat: 39.7392,
-      lng: -104.9903,
-      locationName: "Rocky Mountains",
-    },
-    dataPermission: true,
-    likes: 45,
-  },
-];
+import { useSession } from "next-auth/react";
+import DeletePostBtn from "@/components/ui/deletePostBtn";
 
 const IndividualPostPage: React.FC = () => {
-  const post = initialPosts[0];
-  const user = users.find((u) => u.id === post.userId);
+  const { id } = useParams(); // Extract the post ID from the URL
+  const router = useRouter(); // Initialize the router
+  const [post, setPost] = useState<any>(null);
   const [exifData, setExifData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
+  // Fetch the post data based on the ID
+  const isOwnProfile = +(session?.user?.id ?? 0) === +(post?.userId ?? 0);
   useEffect(() => {
+    if (!id) return;
+
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/posts/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Fetched post:", data); // Verify the data format
+          setPost(data); // Assuming data contains the post
+        } else {
+          console.error("Failed to fetch post:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  // Fetch EXIF data for the post image
+  useEffect(() => {
+    if (!post?.image) return;
+
     const fetchExifData = async () => {
       try {
         const data = await exifr.parse(post.image);
@@ -48,12 +50,19 @@ const IndividualPostPage: React.FC = () => {
       } catch (error) {
         console.error("Error fetching EXIF data:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading state is turned off
       }
     };
-    fetchExifData();
-  }, [post.image, post.dataPermission]);
 
+    fetchExifData();
+  }, [post?.image]);
+
+  // Check if post data exists, if not display loading
+  if (!post) {
+    return <p>Loading post...</p>;
+  }
+
+  // Handle the camera data if it exists
   const handleCameraData = () => {
     if (!exifData) return null;
     const data = [];
@@ -92,57 +101,16 @@ const IndividualPostPage: React.FC = () => {
           maxWidth: "800px",
           margin: "0 auto",
           paddingTop: "125px",
-          position: "relative", // enables absolute positioning inside
+          position: "relative",
         }}
       >
-  <div style={{ position: "relative" }}>
-    {/* ✏️ Edit Button */}
-    <Link href={`/createPost`}
-  style={{
-    position: "absolute",
-    top: "0px",
-    right: "0px", // 👈 move it to the right
-    padding: "8px 14px",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-    zIndex: 1,
-  }}>
-  Edit
-</Link>
-
-    {/* The rest of your post content... */}
-    {/* User Info, Image, Description, Likes, etc. */}
-  </div>
-
-        {/* User Info */}
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-          <img
-            src={user?.profilePicture}
-            alt={user?.name}
-            style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "50%",
-              marginRight: "15px",
-              objectFit: "cover",
-            }}
-          />
-          <div>
-            <strong style={{ fontSize: "18px" }}>{user?.name || user?.userName}</strong>
-            <div style={{ fontSize: "13px", color: "#777" }}>{post.mapData.locationName}</div>
-          </div>
-        </div>
-
+  
         {/* Post Image */}
         <Image
           src={post.image}
           alt={post.title}
-          width="100"
-          height="100"
+          width={800}
+          height={600}
           style={{
             width: "100%",
             height: "auto",
@@ -150,11 +118,12 @@ const IndividualPostPage: React.FC = () => {
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           }}
         />
-
+  
         {/* Post Title & Description */}
         <h1 style={{ marginBottom: "10px" }}>{post.title}</h1>
+        <p>Location: {post.mapData.location}</p>
         <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{post.description}</p>
-
+  
         {post.dataPermission && (
           <div style={{ marginTop: "20px", fontSize: "16px", color: "#444" }}>
             <h2 style={{ marginBottom: "10px" }}>Camera Data</h2>
@@ -171,11 +140,41 @@ const IndividualPostPage: React.FC = () => {
             )}
           </div>
         )}
-
+  
         {/* Likes */}
         <div style={{ marginTop: "20px", fontSize: "16px", color: "#444" }}>
           ❤️ {post.likes} likes
         </div>
+        {isOwnProfile && (
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "20px" }}>
+    <button
+      style={{
+        padding: "10px 20px",
+        backgroundColor: "#007bff",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        fontSize: "14px",
+      }}
+      onClick={() => {
+        const queryParams = new URLSearchParams({
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          image: post.image,
+          location: post.mapData?.location || '',
+          dataPermission: post.dataPermission ? 'true' : 'false',
+        }).toString();
+        
+        router.push(`/createPost?${queryParams}`);
+      }}
+    >
+      Edit Post
+    </button>
+            <DeletePostBtn postId={post.id} />
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,8 +1,11 @@
+//ONLY ROUTES THAT DONT REQUIRE AN ID!!!!!!!!!!!!!!!!!
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import * as postRepo from "@/db/repositories/posts";
 
+//CREATE POST
 export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
@@ -34,6 +37,17 @@ export async function POST(req: Request) {
         return NextResponse.json({message: 'Post created successfully', newPost}, { status: 201 });
     } catch (error) {
         console.error("Error creating post:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+//GET ALL POSTS
+export async function GET(){
+    try {
+        const posts = await postRepo.getAllPosts();
+        return NextResponse.json(posts, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching posts:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

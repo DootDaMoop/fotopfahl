@@ -32,3 +32,46 @@ export async function createPost(post: Omit<PostTable, 'id'>) {
         .executeTakeFirst();
     return newPost
 }
+
+export async function getAllPosts() {
+    const posts = await db
+        .selectFrom('post')
+        .selectAll()
+        .execute();
+    return posts
+}
+
+export async function deletePost(postId: number) {
+    const deletedPost = await db
+        .deleteFrom('post')
+        .where('id', '=', postId)
+        .returning(['id', 'userId', 'title', 'image'])
+        .executeTakeFirst();
+    return deletedPost
+}
+
+export async function updatePost(postId: number, updatedData: any) {
+    try {
+        const updatedPost = await db
+            .updateTable('post')
+            .set({
+                title: updatedData.title,
+                description: updatedData.description,
+                image: updatedData.image,
+                mapData: {
+                    lat: updatedData.mapData?.lat || 0,
+                    lng: updatedData.mapData?.lng || 0,
+                    location: updatedData.mapData?.location || 'Unknown',
+                },
+                dataPermission: updatedData.dataPermission || null,
+            })
+            .where('id', '=', postId)
+            .returning(['id', 'title', 'description', 'image'])
+            .executeTakeFirst();
+
+        return updatedPost;
+    } catch (error) {
+        console.error('Failed to update post:', error);
+        throw new Error('Post update failed');
+    }
+}
