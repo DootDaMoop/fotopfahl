@@ -22,7 +22,7 @@ export interface PostTable {
     userId: number;
     title: string; 
     description: string | null; //description is optional. can be filled with img data if dataPermission = true
-    image: string; 
+    images: string[] | null; 
     mapData: any; 
     dataPermission: boolean;
     likes: number; 
