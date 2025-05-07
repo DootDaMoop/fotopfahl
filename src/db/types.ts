@@ -21,7 +21,7 @@ export interface PostTable {
     id: Generated<number>;
     userId: number;
     title: string; 
-    description: string | null; //description is optional. can be filled with img data if dataPermission = true
+    description: string | null; 
     images: string[] | null; 
     mapData: any; 
     dataPermission: boolean;
@@ -33,4 +33,12 @@ export interface CommentTable {
     postId: number; 
     userId: number; 
     content: string; 
+}
+
+export interface AlbumTable{
+    id: Generated<number>;
+    albumName: string;
+    description: string;
+    userId: number;
+    images: string[] | null;
 }

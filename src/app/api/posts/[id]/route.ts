@@ -18,7 +18,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   const postId = Number(params.id);
   const body = await req.json();
 
-  if (!postId || !body || !body.title || !body.image) {
+  if (!postId || !body || !body.title || !body.images) {
     return NextResponse.json({ error: "Title and image are required" }, { status: 400 });
   }
 
