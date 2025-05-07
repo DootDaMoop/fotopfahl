@@ -111,43 +111,6 @@ const SearchBanner: React.FC = () => {
         }}>
         <div style={{ width: "50px" }}></div>
 
-        {/* Search Bar */}
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            zIndex: 3,
-          }}>
-
-          <input
-            type="text" placeholder="Search..." style={{
-              padding: "10px",
-              fontSize: "16px",
-              border: "2px solid #064789",
-              borderRadius: "5px",
-              width: "300px",
-              fontFamily: "'Sansita', sans-serif",
-            }}/>
-
-          <button 
-            style={{ 
-              padding: "10px 20px", 
-              fontSize: "16px", 
-              backgroundColor: "#064789", 
-              color: "white", 
-              border: "none", 
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontFamily: "'Sansita', sans-serif",
-            }}>
-            Search
-          </button>
-        </div>
-
         {/* Profile Picture on Right */}
         <div 
   style={{ 
