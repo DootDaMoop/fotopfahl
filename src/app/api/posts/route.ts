@@ -27,7 +27,7 @@ export async function POST(req: Request) {
             mapData: {
                 lat: body.mapData?.lat || 0,
                 lng: body.mapData?.lng || 0,
-                location: body.mapData?.location || 'Unknown',
+                location: body.mapData?.location || null,
             },
             dataPermission: body.dataPermission || null,
             likes: 0,
