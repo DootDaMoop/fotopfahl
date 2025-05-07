@@ -109,7 +109,7 @@ const CreatePost = () => {
         mapData: {
           lat: 0,
           lng: 0,
-          location: formData.location || 'Unknown',
+          location: formData.location || null,
         },
       };
       console.log('Submitting post data:', postData);

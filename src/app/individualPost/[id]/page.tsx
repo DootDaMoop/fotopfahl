@@ -10,18 +10,18 @@ import DeletePostBtn from "@/components/ui/deletePostBtn";
 import DeleteCommentBtn from "@/components/ui/deleteCommentBtn";
 
 const IndividualPostPage: React.FC = () => {
-  const { id } = useParams(); // Extract the post ID from the URL
-  const router = useRouter(); // Initialize the router
+  const { id } = useParams();
+  const router = useRouter();
   const [post, setPost] = useState<any>(null);
-  const [comments, setComments] = useState<any[]>([]); // State for comments
-  const [newComment, setNewComment] = useState(""); // State for the new comment
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // Track the comment being edited
-  const [editingContent, setEditingContent] = useState<string>(""); // Track the content of the comment being edited
+  const [comments, setComments] = useState<any[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState<string>("");
   const [exifData, setExifData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [locationCoordinates, setLocationCoordinates] = useState<{ lat: string; lon: string } | null>(null);
   const { data: session, status } = useSession();
 
-  // Fetch the post data based on the ID
   const isOwnPost = +(session?.user?.id ?? 0) === +(post?.userId ?? 0);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const IndividualPostPage: React.FC = () => {
         const response = await fetch(`/api/posts/${id}`);
         if (response.ok) {
           const data = await response.json();
-          setPost(data); // Assuming data contains the post
+          setPost(data);
         } else {
           console.error("Failed to fetch post:", response.statusText);
         }
@@ -44,7 +44,6 @@ const IndividualPostPage: React.FC = () => {
     fetchPost();
   }, [id]);
 
-  // Fetch comments for the post
   useEffect(() => {
     if (!id) return;
 
@@ -53,8 +52,6 @@ const IndividualPostPage: React.FC = () => {
         const response = await fetch(`/api/comments?postId=${id}`);
         if (response.ok) {
           const data = await response.json();
-
-          // Fetch user details for each comment
           const commentsWithUserDetails = await Promise.all(
             data.map(async (comment: any) => {
               const userResponse = await fetch(`/api/users/${comment.userId}`);
@@ -62,11 +59,10 @@ const IndividualPostPage: React.FC = () => {
                 const userData = await userResponse.json();
                 return { ...comment, user: userData };
               }
-              return comment; // Fallback to the original comment if user fetch fails
+              return comment;
             })
           );
-
-          setComments(commentsWithUserDetails); // Set comments with user details
+          setComments(commentsWithUserDetails);
         } else {
           console.error("Failed to fetch comments:", response.statusText);
         }
@@ -78,34 +74,27 @@ const IndividualPostPage: React.FC = () => {
     fetchComments();
   }, [id]);
 
-  // Handle submitting a new comment
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!newComment.trim()) return;
 
     try {
       const response = await fetch(`/api/comments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: newComment, postId: id }),
       });
 
       if (response.ok) {
         const comment = await response.json();
-
-        // Fetch user details for the new comment
         const userResponse = await fetch(`/api/users/${comment.userId}`);
         if (userResponse.ok) {
           const userData = await userResponse.json();
-          setComments((prev) => [...prev, { ...comment, user: userData }]); // Add the new comment with user details
+          setComments((prev) => [...prev, { ...comment, user: userData }]);
         } else {
-          setComments((prev) => [...prev, comment]); // Fallback to the original comment
+          setComments((prev) => [...prev, comment]);
         }
-
-        setNewComment(""); // Clear the textbox
+        setNewComment("");
       } else {
         console.error("Failed to submit comment:", response.statusText);
       }
@@ -114,13 +103,11 @@ const IndividualPostPage: React.FC = () => {
     }
   };
 
-  // Handle opening the edit text box
   const handleEditComment = (comment: any) => {
-    setEditingCommentId(comment.id); // Set the comment being edited
-    setEditingContent(comment.content); // Populate the text box with the comment content
+    setEditingCommentId(comment.id);
+    setEditingContent(comment.content);
   };
 
-  // Handle saving the edited comment
   const handleSaveComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingCommentId) return;
@@ -128,40 +115,32 @@ const IndividualPostPage: React.FC = () => {
     try {
       const response = await fetch(`/api/comments/${editingCommentId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: editingContent }),
       });
-      console.log(response)
+
       if (response.ok) {
         const updatedComment = await response.json();
-        console.log(updatedComment)
         setComments((prev) =>
           prev.map((comment) =>
             comment.id === editingCommentId ? { ...comment, content: updatedComment.content } : comment
           )
         );
-        setEditingCommentId(null); // Clear editing state
-        setEditingContent(""); // Clear the text box
+        setEditingCommentId(null);
+        setEditingContent("");
       } else {
-        console.log(response.json())
         console.error("Failed to update comment:", response.statusText);
       }
-
-      return response.json();
     } catch (error) {
       console.error("Error updating comment:", error);
     }
   };
 
-  // Handle canceling the edit
   const handleCancelEdit = () => {
-    setEditingCommentId(null); // Clear editing state
-    setEditingContent(""); // Clear the text box
+    setEditingCommentId(null);
+    setEditingContent("");
   };
 
-  // Fetch EXIF data for the post image
   useEffect(() => {
     if (!post?.image) return;
 
@@ -172,52 +151,76 @@ const IndividualPostPage: React.FC = () => {
       } catch (error) {
         console.error("Error fetching EXIF data:", error);
       } finally {
-        setLoading(false); // Ensure loading state is turned off
+        setLoading(false);
       }
     };
 
     fetchExifData();
   }, [post?.image]);
 
-  // Check if post data exists, if not display loading
-  if (!post) {
-    return <p>Loading post...</p>;
-  }
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      const location = post?.mapData?.location;
+      if (!location?.trim()) return;
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+          {
+            headers: {
+              "User-Agent": "Fotopfhal (cayscue@uncc.edu)",
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            setLocationCoordinates({ lat: data[0].lat, lon: data[0].lon });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch coordinates:", error);
+      }
+    };
+
+    fetchCoordinates();
+  }, [post?.mapData?.location]);
+
+  if (!post) return <p>Loading post...</p>;
 
   return (
     <>
       <SearchBanner />
-      <div
-        style={{
-          padding: "40px",
-          fontFamily: "'Sansita', sans-serif",
-          maxWidth: "800px",
-          margin: "0 auto",
-          paddingTop: "125px",
-          position: "relative",
-        }}
-      >
-        {/* Post Image */}
+      <div style={{ padding: "40px", fontFamily: "'Sansita', sans-serif", maxWidth: "800px", margin: "0 auto", paddingTop: "125px", position: "relative" }}>
         <Image
           src={post.image}
           alt={post.title}
           width={800}
           height={600}
-          style={{
-            width: "100%",
-            height: "auto",
-            borderRadius: "10px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
+          style={{ width: "100%", height: "auto", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
         />
 
-        {/* Post Title & Description */}
         <h1 style={{ marginBottom: "10px" }}>{post.title}</h1>
-        <p>Location: {post.mapData.location}</p>
         <p style={{ fontSize: "16px", lineHeight: "1.5" }}>{post.description}</p>
         {isOwnPost && <DeletePostBtn postId={post.id} />}
 
-        {/* Comments Section */}
+        {/* OpenStreetMap Embed */}
+        {locationCoordinates ? (
+          <div style={{ marginTop: "20px" }}>
+            <h3>Location</h3>
+            <iframe
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(locationCoordinates.lon) - 0.01}%2C${parseFloat(locationCoordinates.lat) - 0.01}%2C${parseFloat(locationCoordinates.lon) + 0.01}%2C${parseFloat(locationCoordinates.lat) + 0.01}&amp;layer=mapnik`}
+              width="100%"
+              height="400px"
+              frameBorder="0"
+              style={{ border: "none" }}
+            />
+            <br />
+          </div>
+        ) : (
+          <p>No location available.</p>
+        )}
+
         <div style={{ marginTop: "30px" }}>
           <h2>Comments</h2>
           <form onSubmit={handleCommentSubmit} style={{ marginBottom: "20px" }}>
@@ -225,60 +228,23 @@ const IndividualPostPage: React.FC = () => {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Leave a comment..."
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                marginBottom: "10px",
-              }}
+              style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc", marginBottom: "10px" }}
             />
-            <button
-              type="submit"
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
+            <button type="submit" style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
               Submit
             </button>
           </form>
 
-          {/* Display Comments */}
           {comments.length > 0 ? (
             <ul style={{ listStyleType: "none", padding: 0 }}>
               {comments.map((comment, index) => (
-                <li
-                  key={index}
-                  style={{
-                    marginBottom: "10px",
-                    padding: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    position: "relative", // Make the comment container relative
-                  }}
-                >
-                  {/* Buttons at the Top-Right */}
+                <li key={index} style={{ marginBottom: "10px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", position: "relative" }}>
                   {(() => {
                     const isOwnComment = +(session?.user?.id ?? 0) === +(comment.userId ?? 0);
                     if (isOwnComment) {
                       return (
                         <div style={{ position: "absolute", top: "10px", right: "10px", display: "flex", gap: "5px" }}>
-                          <button
-                            style={{
-                              padding: "5px 10px",
-                              backgroundColor: "#007bff",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "5px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleEditComment(comment)}
-                          >
+                          <button style={{ padding: "5px 10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }} onClick={() => handleEditComment(comment)}>
                             Edit
                           </button>
                           <DeleteCommentBtn commentId={comment.id} />
@@ -288,45 +254,18 @@ const IndividualPostPage: React.FC = () => {
                     return null;
                   })()}
 
-                  {/* Comment Content */}
                   {editingCommentId === comment.id ? (
                     <div>
                       <textarea
                         value={editingContent}
                         onChange={(e) => setEditingContent(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          marginBottom: "10px",
-                        }}
+                        style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc", marginBottom: "10px" }}
                       />
                       <div style={{ display: "flex", gap: "10px" }}>
-                        <button
-                          onClick={handleSaveComment}
-                          style={{
-                            padding: "5px 10px",
-                            backgroundColor: "green",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: "pointer",
-                          }}
-                        >
+                        <button onClick={handleSaveComment} style={{ padding: "5px 10px", backgroundColor: "green", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
                           Save
                         </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          style={{
-                            padding: "5px 10px",
-                            backgroundColor: "gray",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: "pointer",
-                          }}
-                        >
+                        <button onClick={handleCancelEdit} style={{ padding: "5px 10px", backgroundColor: "gray", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
                           Cancel
                         </button>
                       </div>
@@ -337,13 +276,7 @@ const IndividualPostPage: React.FC = () => {
                         <img
                           src={comment.user?.profilePicture || "/default-profile.png"}
                           alt={comment.user?.name || "User"}
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                            marginRight: "10px",
-                            objectFit: "cover",
-                          }}
+                          style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px", objectFit: "cover" }}
                         />
                         <strong>{comment.user?.name || "Unknown User"}</strong>
                       </div>
@@ -358,7 +291,6 @@ const IndividualPostPage: React.FC = () => {
           )}
         </div>
 
-        {/* Likes */}
         <div style={{ marginTop: "20px", fontSize: "16px", color: "#444" }}>
           ❤️ {post.likes} likes
         </div>

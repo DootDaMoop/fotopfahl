@@ -14,18 +14,18 @@ export async function getAllAlbums() {
 
 export async function updateAlbum(albumId: number, updatedData: any) {
     try {
-        const updatedPost = await db
+        const updatedAlbum = await db
             .updateTable('album')
             .set({
-                title: updatedData.title,
+                albumName: updatedData.albumName,
                 description: updatedData.description,
                 images: updatedData.image,
             })
             .where('id', '=', albumId)
-            .returning(['id', 'title', 'description', 'images'])
+            .returning(['id', 'albumName', 'description', 'images'])
             .executeTakeFirst();
 
-        return updatedPost;
+        return updatedAlbum;
     } catch (error) {
         console.error('Failed to update post:', error);
         throw new Error('Post update failed');

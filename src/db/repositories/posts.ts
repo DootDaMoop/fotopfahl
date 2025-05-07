@@ -61,7 +61,7 @@ export async function updatePost(postId: number, updatedData: any) {
                 mapData: {
                     lat: updatedData.mapData?.lat || 0,
                     lng: updatedData.mapData?.lng || 0,
-                    location: updatedData.mapData?.location || 'Unknown',
+                    location: updatedData.mapData?.location || null,
                 },
                 dataPermission: updatedData.dataPermission || null,
             })
