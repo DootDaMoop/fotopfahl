@@ -3,7 +3,8 @@ import { findPostById, updatePost, deletePost } from "@/db/repositories/posts";
 
 // GET A SINGLE POST
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const postId = Number(params.id);
+  const { id } = await params;
+  const postId = Number(id);
   const post = await findPostById(postId);
 
   if (!post) {
@@ -15,11 +16,12 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 
 // UPDATE POST
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const postId = Number(params.id);
+  const { id } = await params;
+  const postId = Number(id);
   const body = await req.json();
 
-  if (!postId || !body || !body.title || !body.image) {
-    return NextResponse.json({ error: "Title and image are required" }, { status: 400 });
+  if (!postId || !body || !body.title) {
+    return NextResponse.json({ error: "Title is required" }, { status: 400 });
   }
 
   const updatedPost = await updatePost(postId, body);
@@ -32,7 +34,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 // DELETE POST
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
-  const postId = Number(params.id);
+  const { id } = await params;
+  const postId = Number(id);
 
   if (!postId) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });

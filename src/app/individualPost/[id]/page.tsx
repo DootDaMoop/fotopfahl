@@ -358,15 +358,17 @@ const IndividualPostPage: React.FC = () => {
               fontSize: "14px",
             }}
             onClick={() => {
+              const images = post.images ? (typeof post.images === 'string' ? JSON.parse(post.images) : post.images) : [];
+
               const queryParams = new URLSearchParams({
                 id: post.id,
                 title: post.title,
                 description: post.description,
-                image: post.image,
+                images: JSON.stringify(images),
                 location: post.mapData?.location || '',
                 dataPermission: post.dataPermission ? 'true' : 'false',
               }).toString();
-              
+
               router.push(`/createPost?${queryParams}`);
             }}
           >

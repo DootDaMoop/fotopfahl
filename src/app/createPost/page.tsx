@@ -35,9 +35,14 @@ const CreatePost = () => {
       dataPermission: dataPermission,
     });
 
-    /*if (image) {
-      setImageUrl(image);
-    }*/
+    if (images) {
+      try {
+        const parsedImages = JSON.parse(images);
+        setImageUrls(Array.isArray(parsedImages) ? parsedImages : []);
+      } catch (error) {
+        console.error('Error parsing images:', error);
+      }
+    }
   }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -119,16 +124,23 @@ const CreatePost = () => {
         body: JSON.stringify(postData),
       });
   
-      const responseData = await response.json();
-      console.log('API response: ', responseData);
-  
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API error:', errorData);
         throw new Error(
-          typeof responseData === 'string' ? responseData : 'Failed to create or update post'
+          typeof errorData === 'string' ? errorData : 'Failed to create or update post'
         );
       }
-  
-      router.push('/homePage'); // Redirect to the homepage after success
+
+      const responseData = await response.json();
+      console.log('API response:', responseData);
+
+      if (formData.id) {
+        router.push(`/individualPost/${formData?.id}`);
+      } else {
+        router.push(`/individualPost/${responseData.newPost.id}`);
+      }
+      
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
