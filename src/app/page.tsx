@@ -20,7 +20,7 @@ export default async function Home() {
           alignItems: "center",
           height: "calc(100vh - 100px)",
           margin: 0,
-          marginTop: "125px",
+          marginTop: "50px",
         }}>
         <div
           style={{
@@ -63,15 +63,6 @@ export default async function Home() {
               <RegistrationButton />
               <AuthButton />
             </div>
-          </div>
-
-          {/* Button to navigate to HomePage */}
-          <div style={{ marginTop: "20px" }}>
-            <Link href="/homePage">
-              <button style={{ padding: "10px 20px", fontSize: "16px" }}>
-                Go to Home Page
-              </button>
-            </Link>
           </div>
         </div>
       </div>
