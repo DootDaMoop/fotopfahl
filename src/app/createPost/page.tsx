@@ -210,7 +210,7 @@ const CreatePost = () => {
               style={{ marginRight: "10px" }}
             />
             <label htmlFor="dataPermission">
-              Allow Fotophal to access your photo's metadata (camera details, etc.)
+              Allow Fotophal to access your photo&apos;s metadata (camera details, etc.)
             </label>
           </div>
 

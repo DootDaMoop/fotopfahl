@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import SearchBanner from "@/components/ui/searchBanner";
 import Link from "next/link";
