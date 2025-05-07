@@ -23,7 +23,7 @@ const CreatePost = () => {
     const id = searchParams.get('id');
     const title = searchParams.get('title');
     const description = searchParams.get('description');
-    const image = searchParams.get('image');
+    const images = searchParams.get('images');
     const location = searchParams.get('location');
     const dataPermission = searchParams.get('dataPermission') === 'true';
 

@@ -96,22 +96,22 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           <h1 style={{ margin: 0 }}>{user.name}</h1>
           <h3 style={{ margin: 0 }}>{user.userName}</h3>
         </div>
-{/* Auth Button and Delete Button */}
-{isOwnProfile && (
-  <div
-    style={{
-      position: "absolute", 
-      top: "10px", 
-      right: "10px", 
-      display: "flex", 
-      flexDirection: "column", 
-      alignItems: "center",
-      gap: "15px", 
-    }}>
-    <AuthButton />
-    <DeleteUserBtn userId={userId} />
-  </div>
-)}
+        {/* Auth Button and Delete Button */}
+        {isOwnProfile && (
+          <div
+            style={{
+              position: "absolute", 
+              top: "10px", 
+              right: "10px", 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center",
+              gap: "15px", 
+            }}>
+            <AuthButton />
+            <DeleteUserBtn userId={userId} />
+          </div>
+        )}
         {isOwnProfile ? (
           <ProfileForm
             userId={userId}
