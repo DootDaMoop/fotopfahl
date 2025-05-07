@@ -1,10 +1,10 @@
 import * as path from 'path'
-import { Pool } from 'pg'
+// import { Pool } from 'pg'
 import { promises as fs } from 'fs'
 import {
-  Kysely,
+  // Kysely,
   Migrator,
-  PostgresDialect,
+  // PostgresDialect,
   FileMigrationProvider,
 } from 'kysely'
 import { db } from '@/db/db.ts'

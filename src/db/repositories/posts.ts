@@ -20,10 +20,15 @@ export async function findPostsByUserId(userId: number) {
 }
 
 export async function createPost(post: Omit<PostTable, 'id'>) {
+    const postData = {
+        ...post,
+        images: post.images ? JSON.stringify(post.images) : null,
+    };
+
     const newPost = await db
         .insertInto('post')
-        .values(post)
-        .returning(['id', 'userId', 'title', 'image'])
+        .values(postData)
+        .returning(['id', 'userId', 'title', 'images'])
         .executeTakeFirst();
     return newPost
 }

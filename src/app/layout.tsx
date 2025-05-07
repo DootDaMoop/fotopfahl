@@ -6,7 +6,9 @@ import SessionProvider from "@/components/SessionProvider";
 import { InitializeDB } from "@/scripts/init-db";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
-await InitializeDB();
+if (process.env.RUN_MIGRATIONS === 'true') {
+  await InitializeDB();
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

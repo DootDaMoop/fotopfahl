@@ -9,7 +9,7 @@ const CreatePost = () => {
   const searchParams = useSearchParams(); // Access query parameters
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     id: '',
     title: '',
@@ -35,9 +35,9 @@ const CreatePost = () => {
       dataPermission: dataPermission,
     });
 
-    if (image) {
+    /*if (image) {
       setImageUrl(image);
-    }
+    }*/
   }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -50,32 +50,39 @@ const CreatePost = () => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
       return;
     }
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const uploadResponse = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+  
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+      
+  
       if (!uploadResponse.ok) {
         throw new Error('Failed to upload image');
       }
-
+  
       const uploadData = await uploadResponse.json();
       console.log(uploadData);
-
-      setImageUrl(uploadData.secure_url);
-    } catch (error) {
+  
+      setImageUrls((prev) => [...prev, uploadData.secure_url]);
+      } catch (error) {
       console.error('Error uploading image:', error);
-      setError('Failed to upload image');
+      setError('Failed to upload one or more images');
     }
+  }
+};
+
+  const removeImage = (index: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,18 +91,15 @@ const CreatePost = () => {
     setError(null);
   
     try {
-      if (!imageUrl) {
-        setError('Please upload an image');
-        return;
-      }
       if (!formData.title) {
         setError('Please enter a title');
+        setIsSubmitting(false);
         return;
       }
   
       const postData = {
         ...formData,
-        image: imageUrl,
+        images: imageUrls.length > 0 ? imageUrls : null,
         mapData: {
           lat: 0,
           lng: 0,
@@ -155,22 +159,49 @@ const CreatePost = () => {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              style={{ marginTop: '5px' }}
+              multiple
+              style={{ marginTop: "5px" }}
             />
             <div>Click to upload</div>
-            <div>Upload a photo for your post</div>
-
-            {imageUrl && (
-              <div style={{ marginTop: '10px' }}>
-                <Image
-                  src={imageUrl}
-                  alt="Preview"
-                  width={200}
-                  height={200}
-                  style={{
-                    borderRadius: '5px',
-                  }}
-                />
+            <div>Upload one or more photos for your post (OPTIONAL)</div>
+            
+            {imageUrls.length > 0 && (
+              <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                {imageUrls.map((url, index) => (
+                  <div key={index} style={{ position: "relative", width: "100px", height: "100px" }}>
+                    <Image 
+                      src={url} 
+                      alt={`Preview ${index + 1}`} 
+                      width={100}
+                      height={100}
+                      style={{ 
+                        borderRadius: "5px",
+                        objectFit: "cover"
+                      }} 
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        background: "rgba(255, 0, 0, 0.7)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: "20px",
+                        height: "20px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer"
+                      }}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -230,7 +261,7 @@ const CreatePost = () => {
               style={{ marginRight: '10px' }}
             />
             <label htmlFor="dataPermission">
-              Allow Fotophal to access your photo's metadata (camera details, etc.)
+              Allow Fotophal to access your photo&apos;s metadata (camera details, etc.)
             </label>
           </div>
 
